@@ -1,137 +1,92 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput } from 'react-native'
-import { 
-    timeToString, 
-    getDailyReminderValue, 
-    clearLocalNotification, 
-    setLocalNotification 
-} from '../utils/helpers'
-//import DateHeader from './DateHeader'
-//import TextButton from './TextButton'
-import { Ionicons } from '@expo/vector-icons'
-//import { submitCard } from '../utils/api'
+import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native'
+import { purple } from '../utils/colors'
 import { connect } from 'react-redux'
-import { addCard } from '../actions'
-import { white, purple, gray } from '../utils/colors'
-import { NavigationActions } from 'react-navigation'
-
-function SubmitBtn ({ onPress }) {
-    return (
-        <TouchableOpacity
-            style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn}
-            onPress={onPress}>
-                <Text style={styles.submitBtnText}>Submit</Text>
-        </TouchableOpacity>
-    )
-}
+import { receiveDecks } from '../actions'
+import { fetchListOfDecks } from '../utils/api'
+import { white } from '../utils/colors'
+import { AppLoading } from 'expo'
 
 class Decks extends Component {
     state = {
-        question: '',
-        answer: ''
+        ready: false
     }
-    submit = () => {
-        const entry = this.state
-        const deck = this.props
-
-        this.props.dispatch(addCard({
-            deck,
-            [key] : entry
-        }))
-
-        this.setState(() => ({
-            question: '',
-            answer: ''
-        }))
-
-        this.toHome()
-
-        //submitCard({ deck, entry })
-
-        clearLocalNotification()
-            .then(setLocalNotification())
+    componentDidMount() {
+        const { dispatch } = this.props
+        fetchListOfDecks()
+            .then((decks) => dispatch(receiveDecks(decks)))
+            .then(({ decks }) => {})
+            .then(() => this.setState(() => ({
+                ready: true
+            })))
     }
-    toHome = () => {
-        this.props.navigation.dispatch(NavigationActions.back({
-            key: 'AddCard'
-        }))
+    renderEmptyDate = formattedDate => {
+        return (
+            <View style={styles.item}>
+                <Text style={styles.noDataText}>
+                    You didn't log any data on this day.
+                </Text>
+            </View>
+        )
     }
     render() {
+        const { decks } = this.props
+        const { ready } = this.state
+        if (ready === false) {
+            return <AppLoading />
+        }
         return (
-            <View style={styles.container}>
-                <View>
-                    <Text>
-                        Enter the question
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ question })}
-                        value={this.state.question}
-                    />
-                    <Text>
-                        Enter the answer
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ answer })}
-                        value={this.state.answer}
-                    />
-                </View>
-                <SubmitBtn onPress={this.submit}/>
+            <View>
+                {decks && decks.map((deck) => (
+                    <View style={styles.item}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate(
+                            'DeckDetail',
+                            { entryId: key }
+                        )}>
+                            <Text>{deck.name}</Text>
+                        </TouchableOpacity>
+                    </View>
+                ))}
+                {!decks && (
+                    <View style={styles.item}>
+                        <Text style={styles.noDataText}>
+                            You don't have any decks.
+                        </Text>
+                    </View>
+                )}
             </View>
         )
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: white
-    },
-    row: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    iosSubmitBtn: {
-        backgroundColor: purple,
-        padding: 10,
-        borderRadius: 7,
-        height: 45,
-        marginLeft: 40,
-        marginRight: 40
-    },
-    androidSubmitBtn: {
-        backgroundColor: purple,
-        padding: 10,
-        paddingLeft: 30,
-        paddingRight: 30,
-        height: 45,
-        borderRadius: 2,
-        alignSelf: 'flex-end',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    submitBtnText: {
-        color: white,
-        fontSize: 22,
-        textAlign: 'center'
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 30,
-        marginRight: 30
-    }
-})
-
-function mapStateToProps ({ deck }) {
-
+function mapStateToProps ({ decks }) {
     return {
-        deck
+        decks
     }
 }
+
+const styles = StyleSheet.create({
+    item: {
+        backgroundColor: white,
+        borderRadius: Platform.OS === 'ios' ? 16 : 2,
+        padding: 20,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 17,
+        justifyContent: 'center',
+        shadowRadius: 3,
+        shadowOpacity: 0.8,
+        shadowColor: 'rgba(0,0,0,0.24)',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        }
+    },
+    noDataText: {
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20
+    }
+})
 
 export default connect(mapStateToProps)(Decks)
