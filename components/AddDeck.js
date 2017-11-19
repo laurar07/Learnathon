@@ -9,9 +9,9 @@ import {
 //import DateHeader from './DateHeader'
 //import TextButton from './TextButton'
 import { Ionicons } from '@expo/vector-icons'
-//import { submitCard } from '../utils/api'
+import { submitDeck } from '../utils/api'
 import { connect } from 'react-redux'
-import { addCard } from '../actions'
+import { addDeck } from '../actions'
 import { white, purple, gray } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 
@@ -27,33 +27,32 @@ function SubmitBtn ({ onPress }) {
 
 class AddDeck extends Component {
     state = {
-        question: '',
-        answer: ''
+        deckName: '',
     }
     submit = () => {
-        const entry = this.state
-        const deck = this.props
+        const key = 'decks'
+        const deckName = this.state
+        const { dispatch } = this.props        
 
-        this.props.dispatch(addCard({
-            deck,
-            [key] : entry
+        // Check if the deck name is repeated
+        dispatch(addDeck({ 
+            [key]: deckName 
         }))
 
         this.setState(() => ({
-            question: '',
-            answer: ''
+            deckName: ''
         }))
 
         this.toHome()
 
-        //submitCard({ deck, entry })
+        submitDeck({ key, deckName })
 
         clearLocalNotification()
             .then(setLocalNotification())
     }
     toHome = () => {
         this.props.navigation.dispatch(NavigationActions.back({
-            key: 'AddCard'
+            key: 'Decks'
         }))
     }
     render() {
@@ -61,20 +60,12 @@ class AddDeck extends Component {
             <View style={styles.container}>
                 <View>
                     <Text>
-                        Enter the question
+                        Enter the name of the deck
                     </Text>
                     <TextInput
                         style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ question })}
-                        value={this.state.question}
-                    />
-                    <Text>
-                        Enter the answer
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ answer })}
-                        value={this.state.answer}
+                        onChangeText={(text) => this.setState({ deckName: text })}
+                        value={this.state.deckName}
                     />
                 </View>
                 <SubmitBtn onPress={this.submit}/>
@@ -127,11 +118,4 @@ const styles = StyleSheet.create({
     }
 })
 
-function mapStateToProps ({ deck }) {
-
-    return {
-        deck
-    }
-}
-
-export default connect(mapStateToProps)(AddDeck)
+export default connect()(AddDeck)

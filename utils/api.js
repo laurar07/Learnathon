@@ -1,13 +1,13 @@
-/*import { AsyncStorage } from 'react-native'
-import { CALENDAR_STORAGE_KEY, formatCalendarResults } from './_calendar'
+import { AsyncStorage } from 'react-native'
+import { DECKS_STORAGE_KEY, formatListOfDecks } from './_decks'
 
-export function submitEntry({ entry, key }) {
-    return AsyncStorage.mergeItem(CALENDAR_STORAGE_KEY, JSON.stringify({
-        [key] : entry,
+export function submitDeck({ key, deckName }) {
+    return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
+        [key] : deckName,
     }))
 }
 
-export function removeEntry(key) {
+/*export function removeEntry(key) {
     return AsyncStorage.getItem(CALENDAR_STORAGE_KEY)
         .then((results) => {
             const data = JSON.parse(results)
@@ -15,9 +15,9 @@ export function removeEntry(key) {
             delete data[key]
             AsyncStorage.setItem(CALENDAR_STORAGE_KEY, JSON.stringify(data))
         })
-}
-
-export function fetchCalendarResults() {
-    return AsyncStorage.getItem(CALENDAR_STORAGE_KEY)
-        .then(formatCalendarResults)
 }*/
+
+export function fetchListOfDecks() {
+    return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+        .then(formatListOfDecks)
+}
