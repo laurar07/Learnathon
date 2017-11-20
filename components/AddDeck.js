@@ -20,7 +20,7 @@ function SubmitBtn ({ onPress }) {
         <TouchableOpacity
             style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn}
             onPress={onPress}>
-                <Text style={styles.submitBtnText}>Submit</Text>
+                <Text style={styles.submitBtnText}>Add</Text>
         </TouchableOpacity>
     )
 }
@@ -30,7 +30,6 @@ class AddDeck extends Component {
         name: '',
     }
     submit = () => {
-        const key = 'decks'
         const { name } = this.state
         const { 
             dispatch, 
@@ -49,7 +48,10 @@ class AddDeck extends Component {
                 name: ''
             }))
 
-            submitDeck({ key, name })
+            submitDeck({
+                name,
+                cards: []
+            })
 
             this.showAlert(true, 'The new deck has been added successfully.');
         }
@@ -80,14 +82,16 @@ class AddDeck extends Component {
         return (
             <View style={styles.container}>
                 <View>
-                    <Text>
-                        Enter the name of the deck
+                    <Text style={styles.deckName}>
+                        Enter the name of a deck to add
                     </Text>
                     <TextInput
                         style={{ height: 40, borderColor: gray, borderWidth: 1 }}
                         onChangeText={(text) => this.setState({ name: text })}
                         value={this.state.name}
                     />
+                </View>
+                <View style={[{flex: 1}]}>
                 </View>
                 <SubmitBtn onPress={this.submit}/>
             </View>
@@ -111,6 +115,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    space: {
+        height: 80
     },
     iosSubmitBtn: {
         backgroundColor: purple,
@@ -142,6 +149,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 30,
         marginRight: 30
+    },
+    deckName: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20
     }
 })
 

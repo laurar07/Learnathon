@@ -14,8 +14,7 @@ class Decks extends Component {
     componentDidMount() {
         const { dispatch } = this.props
 
-        // TODO: REMOVE THIS
-        // removeAllDecks() 
+        // removeAllDecks()
         fetchListOfDecks()
             .then((decks) => dispatch(receiveDecks(decks)))
             .then(({ decks }) => {})
@@ -44,7 +43,7 @@ class Decks extends Component {
                     <View style={styles.item} key={deck.name}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate(
                             'DeckDetail',
-                            { entryId: key }
+                            { deck }
                         )}>
                             <Text style={styles.deckName}>{deck.name}</Text>
                             <Text style={styles.deckCardCount}>{deck.cards ? deck.cards.length : 0} cards</Text>

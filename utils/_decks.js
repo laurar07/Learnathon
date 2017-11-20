@@ -50,9 +50,16 @@ function setMissingDates (dates) {
   return dates
 }*/
 
-export function formatListOfDecks (decks) {
+function getDecks(data) {
+  const decks = data['decks'];
+  return decks;
+}
+
+export function formatListOfDecks (data) {
   /*return results === null
     ? setDummyData()
     : setMissingDates(JSON.parse(results))*/
-    return decks === null ? {} : JSON.parse(decks)
+    return data === null ? 
+      {} : 
+      getDecks(JSON.parse(data))
 }
