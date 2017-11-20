@@ -12,26 +12,42 @@ import { Ionicons } from '@expo/vector-icons'
 //import { submitCard } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
-import { white, purple, gray } from '../utils/colors'
+import { white, purple, gray, black } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 
-function SubmitBtn ({ onPress }) {
+function AddCardBtn ({ onPress }) {
     return (
         <TouchableOpacity
-            style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn}
+            style={Platform.OS === 'ios' ? 
+                [styles.iosBtn, { backgroundColor: white, borderWidth: 2, borderColor: black }] : 
+                [styles.androidBtn, { backgroundColor: white, borderWidth: 2, borderColor: black }]}
             onPress={onPress}>
-                <Text style={styles.submitBtnText}>Submit</Text>
+                <Text style={[styles.submitBtnText, { color: black }]}>Add Card</Text>
+        </TouchableOpacity>
+    )
+}
+
+function StartQuizBtn ({ onPress }) {
+    return (
+        <TouchableOpacity
+            style={Platform.OS === 'ios' ? 
+                [styles.iosBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }] : 
+                [styles.androidBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }]}
+            onPress={onPress}>
+                <Text style={[styles.submitBtnText, { color: white }]}>Start Quiz</Text>
         </TouchableOpacity>
     )
 }
 
 class DeckDetail extends Component {
-    state = {
-        question: '',
-        answer: ''
-    }
-    submit = () => {
-        const entry = this.state
+    static navigationOptions = ({ navigation }) => {
+        const { deck } = navigation.state.params      
+        return {
+            title: deck.name
+        }
+    } 
+    addCard = () => {
+        /*const entry = this.state
         const deck = this.props
 
         this.props.dispatch(addCard({
@@ -49,6 +65,13 @@ class DeckDetail extends Component {
         //submitCard({ deck, entry })
 
         clearLocalNotification()
+            .then(setLocalNotification())*/
+    }
+    startQuiz = () => {
+
+        // TODO: Start quiz
+
+        clearLocalNotification()
             .then(setLocalNotification())
     }
     toHome = () => {
@@ -57,27 +80,19 @@ class DeckDetail extends Component {
         }))
     }
     render() {
+        const { deck } = this.props.navigation.state.params
         return (
             <View style={styles.container}>
-                <View>
-                    <Text>
-                        Enter the question
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ question })}
-                        value={this.state.question}
-                    />
-                    <Text>
-                        Enter the answer
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ answer })}
-                        value={this.state.answer}
-                    />
+                <View style={styles.item}>
+                    <Text style={styles.deckName}>{deck.name}</Text>
+                    <Text style={styles.deckCardCount}>{deck.cards ? deck.cards.length : 0} cards</Text>
                 </View>
-                <SubmitBtn onPress={this.submit}/>
+                <View style={[{flex: 1}]}>
+                </View>
+                <AddCardBtn onPress={this.addCard}/>
+                <View style={styles.space}>
+                </View>
+                <StartQuizBtn onPress={this.startQuiz}/>
             </View>
         )
     }
@@ -94,16 +109,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
-    iosSubmitBtn: {
-        backgroundColor: purple,
+    item: {
+        backgroundColor: white,
+        borderRadius: Platform.OS === 'ios' ? 16 : 2,
+        padding: 20,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 17,
+        justifyContent: 'center',
+        shadowRadius: 3,
+        shadowOpacity: 0.8,
+        shadowColor: 'rgba(0,0,0,0.24)',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        }
+    },
+    space: {
+        height: 20
+    },
+    iosBtn: {
         padding: 10,
         borderRadius: 7,
         height: 45,
         marginLeft: 40,
         marginRight: 40
     },
-    androidSubmitBtn: {
-        backgroundColor: purple,
+    androidBtn: {
         padding: 10,
         paddingLeft: 30,
         paddingRight: 30,
@@ -114,7 +146,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     submitBtnText: {
-        color: white,
+        color: black,
         fontSize: 22,
         textAlign: 'center'
     },
@@ -124,13 +156,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 30,
         marginRight: 30
+    },
+    deckName: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20
+    },
+    deckCardCount: {
+        textAlign: 'center'        
     }
 })
 
-function mapStateToProps ({ deck }) {
-
+function mapStateToProps(state, { navigation }) {
+    const { deck } = navigation.state.params
     return {
         deck
+    }
+}
+
+function mapDispatchToProps (dispatch, { navigation }) {
+    const { deck } = navigation.state.params
+    return {
+        goBack: () => navigation.goBack()
     }
 }
 

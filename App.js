@@ -53,7 +53,11 @@ const Tabs = TabNavigator({
   }
 }, {
   navigationOptions: {
-    header: null
+    title: 'Learnathon',
+    headerTintColor: white,
+    headerStyle: {
+      backgroundColor: purple
+    }
   },
   tabBarOptions: {
     activeTintColor: Platform.OS === 'ios' ? purple : white,
