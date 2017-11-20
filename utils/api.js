@@ -1,5 +1,5 @@
 import { AsyncStorage } from 'react-native'
-import { DECKS_STORAGE_KEY, formatListOfDecks } from './_decks'
+import { DECKS_STORAGE_KEY, formatListOfDecks, hasDeckName } from './_decks'
 
 export function submitDeck({ key, deckName }) {
     return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
@@ -20,4 +20,9 @@ export function submitDeck({ key, deckName }) {
 export function fetchListOfDecks() {
     return AsyncStorage.getItem(DECKS_STORAGE_KEY)
         .then(formatListOfDecks)
+}
+
+export function removeAllDecks () {
+    AsyncStorage.removeItem(DECKS_STORAGE_KEY, (err) => {
+    });
 }
