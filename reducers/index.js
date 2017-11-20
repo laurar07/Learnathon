@@ -13,9 +13,14 @@ function entries (state = {}, action) {
                 [action.deck] : state[action.deck].concat(action.entry)
             }
         case ADD_DECK:
+            let deckList = state['decks']
+            let newDeck = {
+                'name': action.name,
+                'cards': []
+            }
             return {
                 ...state,
-                [action.name] : {}
+                ['decks'] : deckList === undefined ? [newDeck] : deckList.concat(newDeck)
             }
         default:
             return state

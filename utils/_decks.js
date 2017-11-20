@@ -54,5 +54,5 @@ export function formatListOfDecks (decks) {
   /*return results === null
     ? setDummyData()
     : setMissingDates(JSON.parse(results))*/
-    return decks
+    return decks === null ? {} : JSON.parse(decks)
 }

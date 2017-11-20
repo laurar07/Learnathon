@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
 import { 
     timeToString, 
     getDailyReminderValue, 
@@ -27,34 +27,55 @@ function SubmitBtn ({ onPress }) {
 
 class AddDeck extends Component {
     state = {
-        deckName: '',
+        name: '',
     }
     submit = () => {
         const key = 'decks'
-        const deckName = this.state
-        const { dispatch } = this.props        
+        const { name } = this.state
+        const { 
+            dispatch, 
+            decks 
+        } = this.props        
 
-        // Check if the deck name is repeated
-        dispatch(addDeck({ 
-            [key]: deckName 
-        }))
+        const exists = decks && decks.filter((deck) => deck.name === name);
+        if (name.length === 0 || !name.trim()) {
+            this.showAlert(false, 'Please enter a valid name for the deck.')
+        } else if (exists && exists.length > 0) {
+            this.showAlert(false, 'There is already a deck with that name. Please choose a different name.')
+        } else {
+            dispatch(addDeck(name)) 
 
-        this.setState(() => ({
-            deckName: ''
-        }))
+            this.setState(() => ({
+                name: ''
+            }))
 
-        this.toHome()
+            submitDeck({ key, name })
 
-        submitDeck({ key, deckName })
-
-        clearLocalNotification()
-            .then(setLocalNotification())
+            this.showAlert(true, 'The new deck has been added successfully.');
+        }
     }
-    toHome = () => {
-        this.props.navigation.dispatch(NavigationActions.back({
-            key: 'Decks'
-        }))
+    showAlert = (success, message) => {
+        if (success) {
+            Alert.alert(
+                'Deck added',
+                message,
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                    { cancelable: false }
+            )
+        } else {
+            Alert.alert(
+                'Failed to add deck',
+                message,
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                    { cancelable: false }
+            )
+        }
     }
+
     render() {
         return (
             <View style={styles.container}>
@@ -64,13 +85,19 @@ class AddDeck extends Component {
                     </Text>
                     <TextInput
                         style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ deckName: text })}
-                        value={this.state.deckName}
+                        onChangeText={(text) => this.setState({ name: text })}
+                        value={this.state.name}
                     />
                 </View>
                 <SubmitBtn onPress={this.submit}/>
             </View>
         )
+    }
+}
+
+function mapStateToProps ({ decks }) {
+    return {
+        decks
     }
 }
 
@@ -118,4 +145,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect()(AddDeck)
+export default connect(mapStateToProps)(AddDeck)

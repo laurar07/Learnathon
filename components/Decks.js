@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native
 import { purple } from '../utils/colors'
 import { connect } from 'react-redux'
 import { receiveDecks } from '../actions'
-import { fetchListOfDecks } from '../utils/api'
+import { fetchListOfDecks, removeAllDecks } from '../utils/api'
 import { white } from '../utils/colors'
 import { AppLoading } from 'expo'
 
@@ -13,6 +13,9 @@ class Decks extends Component {
     }
     componentDidMount() {
         const { dispatch } = this.props
+
+        // TODO: REMOVE THIS
+        // removeAllDecks() 
         fetchListOfDecks()
             .then((decks) => dispatch(receiveDecks(decks)))
             .then(({ decks }) => {})
@@ -38,12 +41,13 @@ class Decks extends Component {
         return (
             <View>
                 {decks && decks.map((deck) => (
-                    <View style={styles.item}>
+                    <View style={styles.item} key={deck.name}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate(
                             'DeckDetail',
                             { entryId: key }
                         )}>
-                            <Text>{deck.name}</Text>
+                            <Text style={styles.deckName}>{deck.name}</Text>
+                            <Text style={styles.deckCardCount}>{deck.cards ? deck.cards.length : 0} cards</Text>
                         </TouchableOpacity>
                     </View>
                 ))}
@@ -81,6 +85,16 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3
         }
+    },
+    deckName: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20
+    },
+    deckCardCount: {
+        textAlign: 'center'        
     },
     noDataText: {
         fontSize: 20,
