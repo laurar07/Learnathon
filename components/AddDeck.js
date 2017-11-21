@@ -9,7 +9,7 @@ import {
 //import DateHeader from './DateHeader'
 //import TextButton from './TextButton'
 import { Ionicons } from '@expo/vector-icons'
-import { submitDeck } from '../utils/api'
+import { submitDeck, fetchDeck } from '../utils/api'
 import { connect } from 'react-redux'
 import { addDeck } from '../actions'
 import { white, purple, gray } from '../utils/colors'
@@ -42,27 +42,31 @@ class AddDeck extends Component {
         } else if (exists && exists.length > 0) {
             this.showAlert(false, 'There is already a deck with that name. Please choose a different name.')
         } else {
-            dispatch(addDeck(name)) 
-
-            this.setState(() => ({
-                name: ''
-            }))
-
             submitDeck({
                 name,
                 cards: []
             })
-
-            this.showAlert(true, 'The new deck has been added successfully.');
+            .then(() => dispatch(addDeck(name)))
+            .then(() =>
+                this.setState(() => ({
+                    name: ''
+                }))
+            )
+            .then(() => fetchDeck(name).then(
+                (deck) => this.showAlert(true, 'The new deck has been added successfully.', deck))
+            )
         }
     }
-    showAlert = (success, message) => {
+    showAlert = (success, message, deck) => {
         if (success) {
             Alert.alert(
                 'Deck added',
                 message,
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {text: 'OK', onPress: () => this.props.navigation.navigate(
+                        'DeckDetail',
+                        { deck }
+                    )},
                 ],
                     { cancelable: false }
             )

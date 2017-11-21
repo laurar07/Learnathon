@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import AddCard from './components/AddCard'
 import DeckDetail from './components/DeckDetail'
-import QuizCard from './components/QuizCard'
+import Quiz from './components/Quiz'
 import Results from './components/Results'
 import Decks from './components/Decks'
 import AddDeck from './components/AddDeck'
@@ -97,8 +97,8 @@ const MainNavigator = StackNavigator({
       }
     }
   },
-  QuizCard: {
-    screen: QuizCard,
+  Quiz: {
+    screen: Quiz,
     navigationOptions: {
       headerTintColor: white,
       headerStyle: {

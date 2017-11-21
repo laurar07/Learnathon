@@ -58,6 +58,20 @@ export function fetchListOfDecks() {
         .then((data) => formatListOfDecks(data))
 }
 
+export function fetchDeck(name) {
+    return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+        .then((data) => {
+            const decks = JSON.parse(data)['decks']
+            for (let i = 0; i < decks.length; i++) {
+                if (decks[i].name === name) {
+                    return decks[i]
+                }
+            }
+            return {}
+        }
+    )
+}
+
 export function removeAllDecks () {
     AsyncStorage.removeItem(DECKS_STORAGE_KEY, (err) => {
     });
