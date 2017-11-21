@@ -26,7 +26,7 @@ function entries (state = {}, action) {
             }
             return {
                 ...state,
-                ['decks'] : deckList === undefined ? [newDeck] : deckList.concat(newDeck)
+                ['decks'] : (!deckList || !Array.isArray(deckList) || deckList.length === 0) ? [newDeck] : deckList.concat(newDeck)
             }
         default:
             return state

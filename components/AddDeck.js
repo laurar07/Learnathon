@@ -36,7 +36,7 @@ class AddDeck extends Component {
             decks 
         } = this.props        
 
-        const exists = decks && decks.filter((deck) => deck.name === name);
+        const exists = decks && Array.isArray(decks) && decks.filter((deck) => deck.name === name);
         if (name.length === 0 || !name.trim()) {
             this.showAlert(false, 'Please enter a valid name for the deck.')
         } else if (exists && exists.length > 0) {

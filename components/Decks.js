@@ -14,7 +14,7 @@ class Decks extends Component {
     componentDidMount() {
         const { dispatch } = this.props
 
-        // removeAllDecks()
+        removeAllDecks()
         fetchListOfDecks()
             .then((decks) => dispatch(receiveDecks(decks)))
             .then(({ decks }) => {})
@@ -44,13 +44,13 @@ class Decks extends Component {
         }
         return (
             <View>
-                {decks && (
+                {decks && Array.isArray(decks) && decks.length > 0 && (
                     <FlatList
                         data={decks}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index} />
                 )}
-                {!decks && (
+                {(!decks || !Array.isArray(decks) || decks.length === 0) && (
                     <View style={styles.item}>
                         <Text style={styles.noDataText}>
                             You don't have any decks.

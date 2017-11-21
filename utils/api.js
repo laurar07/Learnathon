@@ -4,16 +4,23 @@ import { DECKS_STORAGE_KEY, formatListOfDecks, hasDeckName } from './_decks'
 export function submitDeck({ name, cards }) {
     return AsyncStorage.getItem(DECKS_STORAGE_KEY)
         .then((results) => {
-            const decks = JSON.parse(results)['decks']
-            if (!decks) {
+            const data = JSON.parse(results)
+            if (!data) {
                 AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify({
                     ['decks'] : [{name, cards}]
                 }))
             } else {
-                const updatedDecks = decks.concat({name, cards})
-                AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify({
-                    ['decks'] : updatedDecks
-                }))
+                const decks = JSON.parse(results)['decks']
+                if (!decks) {
+                    AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify({
+                        ['decks'] : [{name, cards}]
+                    }))
+                } else {
+                    const updatedDecks = decks.concat({name, cards})
+                    AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify({
+                        ['decks'] : updatedDecks
+                    }))
+                }
             }
         })
 }
