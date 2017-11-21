@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native'
 import { purple } from '../utils/colors'
 import { connect } from 'react-redux'
 import { receiveDecks } from '../actions'
@@ -22,12 +22,17 @@ class Decks extends Component {
                 ready: true
             })))
     }
-    renderEmptyDate = formattedDate => {
+
+    renderItem = ({ item }) => {
         return (
-            <View style={styles.item}>
-                <Text style={styles.noDataText}>
-                    You didn't log any data on this day.
-                </Text>
+            <View style={styles.item} key={item.name}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate(
+                    'DeckDetail',
+                    { deck: item }
+                )}>
+                    <Text style={styles.deckName}>{item.name}</Text>
+                    <Text style={styles.deckCardCount}>{item.cards ? item.cards.length : 0} cards</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -39,17 +44,12 @@ class Decks extends Component {
         }
         return (
             <View>
-                {decks && decks.map((deck) => (
-                    <View style={styles.item} key={deck.name}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate(
-                            'DeckDetail',
-                            { deck }
-                        )}>
-                            <Text style={styles.deckName}>{deck.name}</Text>
-                            <Text style={styles.deckCardCount}>{deck.cards ? deck.cards.length : 0} cards</Text>
-                        </TouchableOpacity>
-                    </View>
-                ))}
+                {decks && (
+                    <FlatList
+                        data={decks}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => index} />
+                )}
                 {!decks && (
                     <View style={styles.item}>
                         <Text style={styles.noDataText}>
