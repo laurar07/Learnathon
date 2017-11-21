@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Easing } from 'react-native'
 import { 
     timeToString, 
     getDailyReminderValue, 
@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
+//import FlipCard from 'react-native-flip-card-view'
 
 function SubmitBtn ({ onPress }) {
     return (
@@ -27,8 +28,7 @@ function SubmitBtn ({ onPress }) {
 
 class Quiz extends Component {
     state = {
-        question: '',
-        answer: ''
+        isFlipped: ''
     }
     submit = () => {
         const entry = this.state
@@ -56,28 +56,32 @@ class Quiz extends Component {
             key: 'AddCard'
         }))
     }
+    renderFront = () => {
+        return (
+            <View style={{flex: 1, backgroundColor: '#81D4FA', justifyContent: 'center', alignItems: 'center'}}>
+              <TouchableOpacity style={{backgroundColor: 'black', padding: 20}} onPress={this.flip}>
+                <Text style={{fontSize: 32, color: 'white'}}>Flip to Back!</Text>
+              </TouchableOpacity>
+            </View>
+          );
+    }
+    renderBack = () => {
+        return (
+            <View style={{flex: 1, backgroundColor: '#1565C0', justifyContent: 'center', alignItems: 'center'}}>
+              <TouchableOpacity style={{backgroundColor: 'black', padding: 20}} onPress={this.flip}>
+                <Text style={{fontSize: 32, color: 'white'}}>Flip to Front!</Text>
+              </TouchableOpacity>
+            </View>
+          );
+    }
+    flip = () => {
+        this.setState({
+            isFlipped: !this.state.isFlipped
+        });
+    }
     render() {
         return (
-            <View style={styles.container}>
-                <View>
-                    <Text>
-                        Enter the question
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ question })}
-                        value={this.state.question}
-                    />
-                    <Text>
-                        Enter the answer
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ answer })}
-                        value={this.state.answer}
-                    />
-                </View>
-                <SubmitBtn onPress={this.submit}/>
+            <View>
             </View>
         )
     }
