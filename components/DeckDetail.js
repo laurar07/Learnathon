@@ -158,15 +158,9 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state, { navigation }) {
     const { deck } = navigation.state.params
+    const currDeck = state['decks'].filter((d) => d.name === deck.name)[0]
     return {
-        deck
-    }
-}
-
-function mapDispatchToProps (dispatch, { navigation }) {
-    const { deck } = navigation.state.params
-    return {
-        goBack: () => navigation.goBack()
+        deck: currDeck
     }
 }
 
