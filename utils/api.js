@@ -18,6 +18,31 @@ export function submitDeck({ name, cards }) {
         })
 }
 
+export function submitCard(deckName, newCard) {
+    return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+        .then((results) => {
+            const decks = JSON.parse(results)['decks']
+            let deck = {}
+            for (let i = 0; i < decks.length; i++) {
+                if (decks[i].name === deckName) {
+                    deck = decks[i]
+                    break
+                }
+            }
+            if (deck && deck.cards) {
+                const updatedListOfCards = deck.cards.concat(newCard)
+                const updatedDeck = {
+                    'name': deck.name,
+                    'cards': updatedListOfCards
+                }
+                const updatedDecks = decks.filter((deck) => deck.name !== deckName).concat(updatedDeck)
+                AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify({
+                    ['decks'] : updatedDecks
+                }))
+            }
+        })
+}
+
 /*export function removeEntry(key) {
     return AsyncStorage.getItem(CALENDAR_STORAGE_KEY)
         .then((results) => {
