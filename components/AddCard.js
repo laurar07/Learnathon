@@ -177,7 +177,7 @@ function mapStateToProps(state, { navigation }) {
     }
 }
 
-function mapDispatchToProps (dispatch, { navigation }) {
+function mapDispatchToProps(dispatch, { navigation }) {
     const { deck } = navigation.state.params
     return {
         goBack: () => navigation.goBack()

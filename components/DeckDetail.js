@@ -27,12 +27,13 @@ function AddCardBtn ({ onPress }) {
     )
 }
 
-function StartQuizBtn ({ onPress }) {
+function StartQuizBtn ({ onPress, deck }) {
     return (
         <TouchableOpacity
             style={Platform.OS === 'ios' ? 
                 [styles.iosBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }] : 
                 [styles.androidBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }]}
+            disabled={(deck && deck.cards && deck.cards.length > 0) ? false : true}
             onPress={onPress}>
                 <Text style={[styles.submitBtnText, { color: white }]}>Start Quiz</Text>
         </TouchableOpacity>
@@ -47,8 +48,12 @@ class DeckDetail extends Component {
         }
     } 
     startQuiz = () => {
+        const { deck } = this.props
 
-        // TODO: Start quiz
+        this.props.navigation.navigate(
+            'Quiz',
+            { deck }
+        )
 
         clearLocalNotification()
             .then(setLocalNotification())
@@ -59,7 +64,7 @@ class DeckDetail extends Component {
         }
     }
     render() {
-        const { deck } = this.props
+        const { deck, dispatch } = this.props
         return (
             <View style={styles.container}>
                 <View style={styles.item}>
@@ -74,7 +79,7 @@ class DeckDetail extends Component {
                         )}/>
                 <View style={styles.space}>
                 </View>
-                <StartQuizBtn onPress={this.startQuiz}/>
+                <StartQuizBtn onPress={this.startQuiz} deck={deck}/>
             </View>
         )
     }

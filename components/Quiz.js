@@ -25,7 +25,7 @@ function SubmitBtn ({ onPress }) {
     )
 }
 
-class QuizCard extends Component {
+class Quiz extends Component {
     state = {
         question: '',
         answer: ''
@@ -134,4 +134,4 @@ function mapStateToProps ({ deck }) {
     }
 }
 
-export default connect(mapStateToProps)(QuizCard)
+export default connect(mapStateToProps)(Quiz)
