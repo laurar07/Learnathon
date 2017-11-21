@@ -46,27 +46,6 @@ class DeckDetail extends Component {
             title: deck.name
         }
     } 
-    addCard = () => {
-        /*const entry = this.state
-        const deck = this.props
-
-        this.props.dispatch(addCard({
-            deck,
-            [key] : entry
-        }))
-
-        this.setState(() => ({
-            question: '',
-            answer: ''
-        }))
-
-        this.toHome()
-
-        //submitCard({ deck, entry })
-
-        clearLocalNotification()
-            .then(setLocalNotification())*/
-    }
     startQuiz = () => {
 
         // TODO: Start quiz
@@ -74,13 +53,13 @@ class DeckDetail extends Component {
         clearLocalNotification()
             .then(setLocalNotification())
     }
-    toHome = () => {
-        this.props.navigation.dispatch(NavigationActions.back({
-            key: 'AddCard'
-        }))
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.deck != this.props.deck) {
+            this.props.navigation.setParams({ deck: nextProps.deck });
+        }
     }
     render() {
-        const { deck } = this.props.navigation.state.params
+        const { deck } = this.props
         return (
             <View style={styles.container}>
                 <View style={styles.item}>
@@ -89,7 +68,10 @@ class DeckDetail extends Component {
                 </View>
                 <View style={[{flex: 1}]}>
                 </View>
-                <AddCardBtn onPress={this.addCard}/>
+                <AddCardBtn onPress={() => this.props.navigation.navigate(
+                            'AddCard',
+                            { deck }
+                        )}/>
                 <View style={styles.space}>
                 </View>
                 <StartQuizBtn onPress={this.startQuiz}/>

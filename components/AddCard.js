@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
 import { 
     timeToString, 
     getDailyReminderValue, 
@@ -9,7 +9,7 @@ import {
 //import DateHeader from './DateHeader'
 //import TextButton from './TextButton'
 import { Ionicons } from '@expo/vector-icons'
-//import { submitCard } from '../utils/api'
+import { submitCard } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray } from '../utils/colors'
@@ -20,7 +20,7 @@ function SubmitBtn ({ onPress }) {
         <TouchableOpacity
             style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn}
             onPress={onPress}>
-                <Text style={styles.submitBtnText}>Submit</Text>
+                <Text style={styles.submitBtnText}>Add</Text>
         </TouchableOpacity>
     )
 }
@@ -30,52 +30,85 @@ class AddCard extends Component {
         question: '',
         answer: ''
     }
+    static navigationOptions = ({ navigation }) => {
+        const { deck } = navigation.state.params      
+        return {
+            title: `${deck.name} - Add Card`
+        }
+    } 
     submit = () => {
-        const entry = this.state
-        const deck = this.props
+        const { 
+            question,
+            answer
+        } = this.state
+        const { 
+            dispatch 
+        } = this.props
+        const { 
+            deck 
+        } = this.props.navigation.state.params        
 
-        this.props.dispatch(addCard({
-            deck,
-            [key] : entry
-        }))
+        if (question.length === 0 || !question.trim() || answer.length === 0 || !answer.trim()) {
+            this.showAlert(false, 'Please enter a valid question and answer to add to the deck.')
+        } else {
+            dispatch(addCard(deck, {question, answer})) 
 
-        this.setState(() => ({
-            question: '',
-            answer: ''
-        }))
+            this.setState(() => ({
+                question: '',
+                answer: ''
+            }))
 
-        this.toHome()
+            submitCard(deck.name, {question, answer})
 
-        //submitCard({ deck, entry })
-
-        clearLocalNotification()
-            .then(setLocalNotification())
+            this.showAlert(true, 'The new card has been added successfully.');
+        }
     }
-    toHome = () => {
-        this.props.navigation.dispatch(NavigationActions.back({
-            key: 'AddCard'
-        }))
+    showAlert = (success, message) => {
+        if (success) {
+            Alert.alert(
+                'Card added',
+                message,
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                    { cancelable: false }
+            )
+        } else {
+            Alert.alert(
+                'Failed to add card',
+                message,
+                [
+                    {text: 'OK', onPress: () => {}},
+                ],
+                    { cancelable: false }
+            )
+        }
     }
+
     render() {
         return (
             <View style={styles.container}>
                 <View>
-                    <Text>
-                        Enter the question
+                    <Text style={styles.deckName}>
+                        Enter the question to add
                     </Text>
                     <TextInput
                         style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ question })}
+                        onChangeText={(text) => this.setState({ question: text })}
                         value={this.state.question}
                     />
-                    <Text>
-                        Enter the answer
+                    <View style={styles.space}>
+                    </View>
+                    <Text style={styles.deckName}>
+                        Enter the correct answer
                     </Text>
                     <TextInput
                         style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ answer })}
+                        onChangeText={(text) => this.setState({ answer: text })}
                         value={this.state.answer}
                     />
+                </View>
+                <View style={[{flex: 1}]}>
                 </View>
                 <SubmitBtn onPress={this.submit}/>
             </View>
@@ -93,6 +126,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    space: {
+        height: 80
     },
     iosSubmitBtn: {
         backgroundColor: purple,
@@ -124,13 +160,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 30,
         marginRight: 30
+    },
+    deckName: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        paddingTop: 20,
+        paddingBottom: 20
     }
 })
 
-function mapStateToProps ({ deck }) {
-
+function mapStateToProps(state, { navigation }) {
+    const { deck } = navigation.state.params
     return {
         deck
+    }
+}
+
+function mapDispatchToProps (dispatch, { navigation }) {
+    const { deck } = navigation.state.params
+    return {
+        goBack: () => navigation.goBack()
     }
 }
 

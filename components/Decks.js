@@ -32,7 +32,7 @@ class Decks extends Component {
         )
     }
     render() {
-        const { decks } = this.props
+        const { decks, dispatch } = this.props
         const { ready } = this.state
         if (ready === false) {
             return <AppLoading />
