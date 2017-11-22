@@ -58,11 +58,11 @@ class DeckDetail extends Component {
         clearLocalNotification()
             .then(setLocalNotification())
     }
-    componentWillReceiveProps(nextProps) {
+    /*componentWillReceiveProps(nextProps) {
         if (nextProps.deck != this.props.deck) {
             this.props.navigation.setParams({ deck: nextProps.deck });
         }
-    }
+    }*/
     render() {
         const { deck, dispatch } = this.props
         return (

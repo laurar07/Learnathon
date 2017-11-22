@@ -42,25 +42,25 @@ class AddCard extends Component {
             answer
         } = this.state
         const { 
+            deck,
             dispatch 
-        } = this.props
-        const { 
-            deck 
-        } = this.props.navigation.state.params        
+        } = this.props        
 
         if (question.length === 0 || !question.trim() || answer.length === 0 || !answer.trim()) {
             this.showAlert(false, 'Please enter a valid question and answer to add to the deck.')
         } else {
-            dispatch(addCard(deck, {question, answer})) 
-
-            this.setState(() => ({
-                question: '',
-                answer: ''
-            }))
-
-            submitCard(deck.name, {question, answer})
-
-            this.showAlert(true, 'The new card has been added successfully.');
+            submitCard(
+                deck.name,
+                { question, answer }
+            )
+            .then(() => dispatch(addCard(deck, {question, answer})))
+            .then(() =>
+                this.setState(() => ({
+                    question: '',
+                    answer: ''
+                }))
+            )
+            .then(() => this.showAlert(true, 'The new card has been added successfully.'))
         }
     }
     showAlert = (success, message) => {
@@ -172,8 +172,9 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state, { navigation }) {
     const { deck } = navigation.state.params
+    const currDeck = state['decks'].filter((d) => d.name === deck.name)[0]
     return {
-        deck
+        deck: currDeck
     }
 }
 
