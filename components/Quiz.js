@@ -1,20 +1,15 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Easing } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Animated } from 'react-native'
 import { 
-    timeToString, 
     getDailyReminderValue, 
     clearLocalNotification, 
     setLocalNotification 
 } from '../utils/helpers'
-//import DateHeader from './DateHeader'
-//import TextButton from './TextButton'
 import { Ionicons } from '@expo/vector-icons'
-//import { submitCard } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray, blue, red } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
-import FlipCard from "react-native-flip-card-view"
 
 function CorrectBtn ({ onPress }) {
     return (
@@ -75,6 +70,7 @@ class Quiz extends Component {
             index,
             score
         } = this.state
+
         // Navigate to the next question, if applicable
         // If no more questions, navigate to the end
         if (index < deck.cards.length - 1) {
@@ -83,37 +79,22 @@ class Quiz extends Component {
                 flipped: false
             }));
         } else {
-            this.props.navigation.navigate(
-                'Results',
-                { deck, score }
-            )
+            this.resetNavigationToResults()
         }
     }
-    submit = () => {
-        const entry = this.state
-        const deck = this.props
-
-        this.props.dispatch(addCard({
-            deck,
-            [key] : entry
-        }))
-
-        this.setState(() => ({
-            question: '',
-            answer: ''
-        }))
-
-        this.toHome()
-
-        //submitCard({ deck, entry })
-
-        clearLocalNotification()
-            .then(setLocalNotification())
-    }
-    toHome = () => {
-        this.props.navigation.dispatch(NavigationActions.back({
-            key: 'AddCard'
-        }))
+    resetNavigationToResults = () => {
+        const { deck } = this.props
+        const { score } = this.state
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ 
+                    routeName: 'Results',
+                    params: { deck, score }
+                }),
+            ],
+        });
+        this.props.navigation.dispatch(resetAction);
     }
     renderFront = () => {
         return (
@@ -151,19 +132,18 @@ class Quiz extends Component {
                         {deck.cards[index].question}
                     </Text>
                 </View>
-                {/*<TouchableOpacity style={styles.center} onPress={this.flip}>*/}
-                    <FlipCard
-                        velocity={0} // Velocity makes it move
-                        tension={0} // Slow
-                        friction={0} // Oscillate a lot
-                        renderFront={this.renderFront()} 
-                        renderBack={this.renderBack()}
-                        isFlipped={flipped}/>
-                {/*</TouchableOpacity>*/}
-                <CorrectBtn onPress={this.correct} />
-                <View style={styles.space}>
-                </View>
-                <IncorrectBtn onPress={this.incorrect} />
+                <TouchableOpacity style={styles.center} onPress={this.flip}>
+                    <Animated.View style={{transform: [{rotateX: '360deg'}]}}>
+                        {flipped && this.renderBack()}
+                        {!flipped && this.renderFront()}
+                    </Animated.View>
+                </TouchableOpacity>
+                {/*<View style={styles.col}>*/}
+                    <CorrectBtn onPress={this.correct} />
+                    <View style={styles.space}>
+                    </View>
+                    <IncorrectBtn onPress={this.incorrect} />
+                {/*</View>*/}
             </View>
         )
     }
@@ -175,9 +155,9 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: white
     },
-    row: {
+    col: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center'
     },
     iosBtn: {
@@ -193,7 +173,7 @@ const styles = StyleSheet.create({
         paddingRight: 30,
         height: 45,
         borderRadius: 2,
-        alignSelf: 'flex-end',
+        alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -217,7 +197,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingTop: 20,
         paddingBottom: 20
-    }
+    },
+    animatedText: {
+        color: purple,
+        fontSize: 120,
+        textAlign: 'center',
+    },
 })
 
 function mapStateToProps(state, { navigation }) {

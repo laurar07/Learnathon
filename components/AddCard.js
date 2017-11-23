@@ -1,13 +1,5 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
-import { 
-    timeToString, 
-    getDailyReminderValue, 
-    clearLocalNotification, 
-    setLocalNotification 
-} from '../utils/helpers'
-//import DateHeader from './DateHeader'
-//import TextButton from './TextButton'
 import { Ionicons } from '@expo/vector-icons'
 import { submitCard } from '../utils/api'
 import { connect } from 'react-redux'
@@ -145,7 +137,7 @@ const styles = StyleSheet.create({
         paddingRight: 30,
         height: 45,
         borderRadius: 2,
-        alignSelf: 'flex-end',
+        alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center'
     },

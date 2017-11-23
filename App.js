@@ -57,6 +57,10 @@ const Tabs = TabNavigator({
     headerTintColor: white,
     headerStyle: {
       backgroundColor: purple
+    },
+    headerTitleStyle: {
+      textAlign: 'center',
+      alignSelf: 'center'
     }
   },
   tabBarOptions: {
@@ -109,6 +113,7 @@ const MainNavigator = StackNavigator({
   Results: {
     screen: Results,
     navigationOptions: {
+      headerLeft: null,
       headerTintColor: white,
       headerStyle: {
         backgroundColor: purple
