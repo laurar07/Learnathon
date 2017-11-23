@@ -1,5 +1,20 @@
 {
   "expo": {
-    "sdkVersion": "22.0.0"
+    "sdkVersion": "22.0.0",
+    "orientation": "portrait",
+    "name": "Learnathon",
+    "description": "Your mobile study companion",
+    "slug": "learnathon",
+    "version": "1.0",
+    "icon": "icons/learnathon_icon_512.png",
+    "notification": {
+      "icon": "icons/learnathon_icon_45.png"
+    },
+    "ios": {
+      "bundleIdentifier": "org.learnathon.exp"
+    },
+    "android": {
+      "package": "org.learnathon.exp"
+    }
   }
 }

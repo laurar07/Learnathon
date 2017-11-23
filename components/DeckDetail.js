@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput } from 'react-native'
 import { 
-    timeToString, 
     getDailyReminderValue, 
     clearLocalNotification, 
     setLocalNotification 
 } from '../utils/helpers'
-//import DateHeader from './DateHeader'
-//import TextButton from './TextButton'
 import { Ionicons } from '@expo/vector-icons'
-//import { submitCard } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray, black } from '../utils/colors'
@@ -48,8 +44,8 @@ class DeckDetail extends Component {
         }
     } 
     startQuiz = () => {
-        const { deck } = this.props
-
+        const { deck } = this.props        
+        //this.resetNavigationToQuiz()
         this.props.navigation.navigate(
             'Quiz',
             { deck }
@@ -58,11 +54,19 @@ class DeckDetail extends Component {
         clearLocalNotification()
             .then(setLocalNotification())
     }
-    /*componentWillReceiveProps(nextProps) {
-        if (nextProps.deck != this.props.deck) {
-            this.props.navigation.setParams({ deck: nextProps.deck });
-        }
-    }*/
+    resetNavigationToQuiz = () => {
+        const { deck } = this.props
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ 
+                    routeName: 'Quiz',
+                    params: { deck }
+                }),
+            ],
+        });
+        this.props.navigation.dispatch(resetAction);
+    }
     render() {
         const { deck, dispatch } = this.props
         return (
@@ -128,7 +132,7 @@ const styles = StyleSheet.create({
         paddingRight: 30,
         height: 45,
         borderRadius: 2,
-        alignSelf: 'flex-end',
+        alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center'
     },
