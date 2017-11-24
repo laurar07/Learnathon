@@ -11,119 +11,34 @@ import { addCard } from '../actions'
 import { white, purple, gray, black } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 
-function DeckDetailViewBtn ({ onPress }) {
-    return (
-        <TouchableOpacity
-            style={Platform.OS === 'ios' ? 
-                [styles.iosBtn, { backgroundColor: white, borderWidth: 2, borderColor: black }] : 
-                [styles.androidBtn, { backgroundColor: white, borderWidth: 2, borderColor: black }]}
-            onPress={onPress}>
-                <Text style={[styles.submitBtnText, { color: black }]}>Back to Deck</Text>
-        </TouchableOpacity>
-    )
+function getGrade(deck, score) {
+    const scorePercent = (score / deck.cards.length) * 100
+    if (scorePercent === 100) {
+        return 'Excellent!'
+    } else if (scorePercent >= 90) {
+        return 'Congratulations!'
+    } else if (scorePercent >= 80) {
+        return 'Well done!'
+    } else if (scorePercent >= 70) {
+        return 'Pretty good!'
+    } else if (scorePercent >= 60) {
+        return "That's a good start!"
+    } else {
+        return "Let's keep studying!"
+    }
 }
 
-function StartQuizBtn ({ onPress, deck }) {
+export default function Results ({ deck, score }) {
     return (
-        <TouchableOpacity
-            style={Platform.OS === 'ios' ? 
-                [styles.iosBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }] : 
-                [styles.androidBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }]}
-            disabled={(deck && deck.cards && deck.cards.length > 0) ? false : true}
-            onPress={onPress}>
-                <Text style={[styles.submitBtnText, { color: white }]}>Restart Quiz</Text>
-        </TouchableOpacity>
+        <View style={styles.center}>
+            <Text style={[styles.deckName, {fontSize: 40, color: purple}]}>
+                {getGrade(deck, score)}
+            </Text>
+            <Text style={[styles.deckName, {fontSize: 30}]}>
+                You scored {score} out of {deck.cards.length}
+            </Text>
+        </View>
     )
-}
-
-class Results extends Component {
-    static navigationOptions = ({ navigation }) => {
-        const { deck } = navigation.state.params      
-        return {
-            title: `${deck.name} Quiz Complete`
-        }
-    } 
-    startQuiz = () => {
-        const { deck } = this.props
-
-        this.props.navigation.navigate(
-            'Quiz',
-            { deck }
-        )
-
-        clearLocalNotification()
-            .then(setLocalNotification())
-    }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.deck != this.props.deck) {
-            this.props.navigation.setParams({ deck: nextProps.deck });
-        }
-    }
-    getGrade = () => {
-        const { 
-            deck,
-            score
-        } = this.props
-        const scorePercent = (score / deck.cards.length) * 100
-        if (scorePercent === 100) {
-            return 'Excellent!'
-        } else if (scorePercent >= 90) {
-            return 'Congratulations!'
-        } else if (scorePercent >= 80) {
-            return 'Well done!'
-        } else if (scorePercent >= 70) {
-            return 'Pretty good!'
-        } else if (scorePercent >= 60) {
-            return "That's a good start!"
-        } else {
-            return "Let's keep studying!"
-        }
-    }
-    toHome = () => {
-        const resetAction = NavigationActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({
-                    routeName: 'Home',
-                    params: {},
-                    action: NavigationActions.navigate({ routeName: 'Decks'})
-                }),
-            ],
-        });
-        this.props.navigation.dispatch(resetAction);
-    }
-    render() {
-        const { 
-            deck,
-            score
-        } = this.props 
-        return (
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.right} onPress={this.toHome}>
-                    {Platform.OS === 'ios' 
-                    ?   <Ionicons name='ios-close' size={50} color={black}/>
-                    :   <MaterialIcons name='close' size={50} color={black}/>}
-                </TouchableOpacity>
-                <View style={styles.item}>
-                    <Text style={[styles.deckName, {fontSize: 40, color: purple}]}>
-                        {this.getGrade()}
-                    </Text>
-                    <Text style={[styles.deckName, {fontSize: 20}]}>
-                        You scored {score} out of {deck.cards.length}
-                    </Text>
-                </View>
-                <View style={[{flex: 1}]}>
-                </View>
-                <StartQuizBtn onPress={this.startQuiz} deck={deck}/>
-                <View style={styles.space}>
-                </View>
-                <DeckDetailViewBtn onPress={() => this.props.navigation.navigate(
-                    'DeckDetail',
-                    { deck }
-                )}/>
-            </View>
-        )
-    }
 }
 
 const styles = StyleSheet.create({
@@ -180,10 +95,12 @@ const styles = StyleSheet.create({
     },
     center: {
         flex: 1,
-        justifyContent: 'center',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        marginLeft: 30,
-        marginRight: 30
+        marginLeft: 20,
+        marginRight: 20,
+        paddingBottom: 30
     },
     right: {
         justifyContent: 'center',
@@ -199,16 +116,3 @@ const styles = StyleSheet.create({
         textAlign: 'center'        
     }
 })
-
-function mapStateToProps(state, { navigation }) {
-    const { 
-        deck,
-        score
-    } = navigation.state.params
-    return {
-        deck,
-        score
-    }
-}
-
-export default connect(mapStateToProps)(Results)

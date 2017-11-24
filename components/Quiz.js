@@ -10,23 +10,38 @@ import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray, blue, red, black } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
+import Results from './Results'
 
-function CorrectBtn ({ onPress }) {
+function TopBtn ({ onPress, quizComplete }) {
+    const btnText = quizComplete ? 'Restart Quiz' : 'Correct'
     return (
         <TouchableOpacity
-            style={[Platform.OS === 'ios' ? styles.iosBtn : styles.androidBtn, { backgroundColor: blue }]}
+            style={[Platform.OS === 'ios' ? styles.iosBtn : styles.androidBtn,
+                !quizComplete 
+                ? { backgroundColor: blue }
+                : { backgroundColor: purple, borderWidth: 2, borderColor: black }]}
             onPress={onPress}>
-                <Text style={styles.btnText}>Correct</Text>
+                <Text style={
+                    !quizComplete
+                    ? styles.btnText
+                    : [styles.submitBtnText, { color: white }]}>{btnText}</Text>
         </TouchableOpacity>
     )
 }
 
-function IncorrectBtn ({ onPress }) {
+function BottomBtn ({ onPress, quizComplete }) {
+    const btnText = quizComplete ? 'Back to Deck' : 'Incorrect'
     return (
         <TouchableOpacity
-            style={[Platform.OS === 'ios' ? styles.iosBtn : styles.androidBtn, { backgroundColor: red }]}
+            style={[Platform.OS === 'ios' ? styles.iosBtn : styles.androidBtn, 
+            !quizComplete 
+            ? { backgroundColor: red }
+            : { backgroundColor: white, borderWidth: 2, borderColor: black }]}
             onPress={onPress}>
-                <Text style={styles.btnText}>Incorrect</Text>
+                <Text style={
+                    !quizComplete
+                    ? styles.btnText
+                    : [styles.submitBtnText, { color: black }]}>{btnText}</Text>
         </TouchableOpacity>
     )
 }
@@ -65,29 +80,15 @@ class Quiz extends Component {
         this.nextQuestionOrEnd()
     }
     nextQuestionOrEnd = () => {
-        const { deck } = this.props
-        const { 
-            index,
-            score
-        } = this.state
-
         // Navigate to the next question, if applicable
-        // If no more questions, navigate to the end
-        if (index < deck.cards.length - 1) {
+        if (!this.quizComplete()) {
             this.setState((state) => ({ 
                 index: state.index + 1,
                 flipped: false
             }));
-        } else {
-            this.resetNavigation({
-                routeName: 'Results',
-                params: { deck, score }
-            })
         }
     }
     resetNavigation = (navAction) => {
-        const { deck } = this.props
-        const { score } = this.state
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
@@ -96,10 +97,24 @@ class Quiz extends Component {
         });
         this.props.navigation.dispatch(resetAction);
     }
+    restartQuiz = () => {
+        this.setState({
+            index: 0,
+            score: 0,
+            flipped: false
+        })
+    }
+    navigateToDeck = () => {
+        const { deck } = this.props
+        this.resetNavigation({
+            routeName: 'DeckDetail',
+            params: { deck },
+        })
+    }
     renderFront = () => {
         return (
             <View>
-                <Text style={[styles.questionAnswerText, {fontSize: 30, color: red}]}>
+                <Text style={[styles.questionAnswerText, {fontSize: 40, color: red}]}>
                     Show Answer
                 </Text>
             </View>
@@ -111,7 +126,7 @@ class Quiz extends Component {
         
         return (
             <View>
-                <Text style={[styles.questionAnswerText, {fontSize: 50, color: blue}]}>
+                <Text style={[styles.questionAnswerText, {fontSize: 40, color: blue}]}>
                     {deck.cards[index].answer}
                 </Text>
             </View>
@@ -124,9 +139,14 @@ class Quiz extends Component {
             action: NavigationActions.navigate({ routeName: 'Decks'})
         })
     }
+    quizComplete = () => {
+        const { deck } = this.props
+        const { index } = this.state
+        return (index >= deck.cards.length); 
+    }
     render() {
         const { deck } = this.props
-        const { index, flipped } = this.state
+        const { index, score, flipped } = this.state
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={styles.right} onPress={this.toHome}>
@@ -134,28 +154,39 @@ class Quiz extends Component {
                     ?   <Ionicons name='ios-close' size={50} color={black}/>
                     :   <MaterialIcons name='close' size={50} color={black}/>}
                 </TouchableOpacity>
-                <View>
-                    <Text style={[styles.questionAnswerText, {fontSize: 20}]}>
-                        Question {index + 1} of {deck.cards.length}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={[styles.questionAnswerText, {fontSize: 40}]}>
-                        {deck.cards[index].question}
-                    </Text>
-                </View>
-                <TouchableOpacity style={styles.center} onPress={this.flip}>
-                    <Animated.View style={{transform: [{rotateX: '360deg'}]}}>
-                        {flipped && this.renderBack()}
-                        {!flipped && this.renderFront()}
-                    </Animated.View>
-                </TouchableOpacity>
-                {/*<View style={styles.col}>*/}
-                    <CorrectBtn onPress={this.correct} />
-                    <View style={styles.space}>
+                {!this.quizComplete() && (
+                    <View style={styles.center}>
+                        <Text style={[styles.numberQuestionText, {fontSize: 20}]}>
+                            Question {index + 1} of {deck.cards.length}
+                        </Text>
+                        <Text style={[styles.questionAnswerText, {fontSize: 40}]}>
+                            {deck.cards[index].question}
+                        </Text>
+                        <TouchableOpacity onPress={this.flip}>
+                            <Animated.View style={{transform: [{rotateX: '360deg'}]}}>
+                                {flipped && this.renderBack()}
+                                {!flipped && this.renderFront()}
+                            </Animated.View>
+                        </TouchableOpacity>
                     </View>
-                    <IncorrectBtn onPress={this.incorrect} />
-                {/*</View>*/}
+                )}
+                {this.quizComplete() && (
+                    <Results
+                        deck={deck}
+                        score={score} />
+                )}
+                   <View>
+                        <TopBtn onPress={!this.quizComplete() 
+                            ? this.correct 
+                            : this.restartQuiz} 
+                                quizComplete={this.quizComplete()} />
+                        <View style={styles.space}>
+                        </View>
+                        <BottomBtn onPress={!this.quizComplete() 
+                            ? this.incorrect
+                            : this.navigateToDeck}
+                                quizComplete={this.quizComplete()} />
+                    </View>
             </View>
         )
     }
@@ -171,6 +202,22 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    item: {
+        backgroundColor: white,
+        borderRadius: Platform.OS === 'ios' ? 16 : 2,
+        padding: 20,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 17,
+        justifyContent: 'center',
+        shadowRadius: 3,
+        shadowOpacity: 0.8,
+        shadowColor: 'rgba(0,0,0,0.24)',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        }
     },
     iosBtn: {
         padding: 10,
@@ -199,6 +246,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 30,
+        marginRight: 30,
+        paddingBottom: 30
+    },
+    bottom: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+        marginLeft: 30,
         marginRight: 30
     },
     right: {
@@ -213,6 +269,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingTop: 20,
         paddingBottom: 20
+    },
+    numberQuestionText: {
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    submitBtnText: {
+        color: black,
+        fontSize: 22,
+        textAlign: 'center'
     },
     animatedText: {
         color: purple,
