@@ -12,7 +12,9 @@ import {
   KeyboardAvoidingView,
   Switch,
   Platform,
-  StatusBar
+  StatusBar,
+  Animated,
+  Easing
 } from 'react-native';
 import AddCard from './components/AddCard'
 import DeckDetail from './components/DeckDetail'
@@ -104,6 +106,7 @@ const MainNavigator = StackNavigator({
   Quiz: {
     screen: Quiz,
     navigationOptions: {
+      headerLeft: null,
       headerTintColor: white,
       headerStyle: {
         backgroundColor: purple

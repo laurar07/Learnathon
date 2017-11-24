@@ -5,7 +5,7 @@ import {
     clearLocalNotification, 
     setLocalNotification 
 } from '../utils/helpers'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray, black } from '../utils/colors'
@@ -79,6 +79,19 @@ class Results extends Component {
             return "Let's keep studying!"
         }
     }
+    toHome = () => {
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({
+                    routeName: 'Home',
+                    params: {},
+                    action: NavigationActions.navigate({ routeName: 'Decks'})
+                }),
+            ],
+        });
+        this.props.navigation.dispatch(resetAction);
+    }
     render() {
         const { 
             deck,
@@ -86,6 +99,11 @@ class Results extends Component {
         } = this.props 
         return (
             <View style={styles.container}>
+                <TouchableOpacity style={styles.right} onPress={this.toHome}>
+                    {Platform.OS === 'ios' 
+                    ?   <Ionicons name='ios-close' size={50} color={black}/>
+                    :   <MaterialIcons name='close' size={50} color={black}/>}
+                </TouchableOpacity>
                 <View style={styles.item}>
                     <Text style={[styles.deckName, {fontSize: 40, color: purple}]}>
                         {this.getGrade()}
@@ -166,6 +184,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 30,
         marginRight: 30
+    },
+    right: {
+        justifyContent: 'center',
+        alignSelf: 'flex-end'
     },
     deckName: {
         textAlign: 'center',
