@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Animated } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Animated, PlatformIOS } from 'react-native'
 import { 
     getDailyReminderValue, 
     clearLocalNotification, 
     setLocalNotification 
 } from '../utils/helpers'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
-import { white, purple, gray, blue, red } from '../utils/colors'
+import { white, purple, gray, blue, red, black } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 
 function CorrectBtn ({ onPress }) {
@@ -79,19 +79,19 @@ class Quiz extends Component {
                 flipped: false
             }));
         } else {
-            this.resetNavigationToResults()
+            this.resetNavigation({
+                routeName: 'Results',
+                params: { deck, score }
+            })
         }
     }
-    resetNavigationToResults = () => {
+    resetNavigation = (navAction) => {
         const { deck } = this.props
         const { score } = this.state
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ 
-                    routeName: 'Results',
-                    params: { deck, score }
-                }),
+                NavigationActions.navigate(navAction),
             ],
         });
         this.props.navigation.dispatch(resetAction);
@@ -117,11 +117,23 @@ class Quiz extends Component {
             </View>
         );
     }
+    toHome = () => {
+        this.resetNavigation({
+            routeName: 'Home',
+            params: {},
+            action: NavigationActions.navigate({ routeName: 'Decks'})
+        })
+    }
     render() {
         const { deck } = this.props
         const { index, flipped } = this.state
         return (
             <View style={styles.container}>
+                <TouchableOpacity style={styles.right} onPress={this.toHome}>
+                    {Platform.OS === 'ios' 
+                    ?   <Ionicons name='ios-close' size={50} color={black}/>
+                    :   <MaterialIcons name='close' size={50} color={black}/>}
+                </TouchableOpacity>
                 <View>
                     <Text style={[styles.questionAnswerText, {fontSize: 20}]}>
                         Question {index + 1} of {deck.cards.length}
@@ -188,6 +200,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 30,
         marginRight: 30
+    },
+    right: {
+        justifyContent: 'center',
+        alignSelf: 'flex-end'
     },
     space: {
         height: 20

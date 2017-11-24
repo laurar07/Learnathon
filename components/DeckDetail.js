@@ -45,7 +45,6 @@ class DeckDetail extends Component {
     } 
     startQuiz = () => {
         const { deck } = this.props        
-        //this.resetNavigationToQuiz()
         this.props.navigation.navigate(
             'Quiz',
             { deck }
@@ -53,19 +52,6 @@ class DeckDetail extends Component {
 
         clearLocalNotification()
             .then(setLocalNotification())
-    }
-    resetNavigationToQuiz = () => {
-        const { deck } = this.props
-        const resetAction = NavigationActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({ 
-                    routeName: 'Quiz',
-                    params: { deck }
-                }),
-            ],
-        });
-        this.props.navigation.dispatch(resetAction);
     }
     render() {
         const { deck, dispatch } = this.props
