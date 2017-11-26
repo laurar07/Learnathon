@@ -62,7 +62,7 @@ class Quiz extends Component {
     static navigationOptions = ({ navigation }) => {
         const { deck } = navigation.state.params      
         return {
-            title: `${deck.name} Quiz`
+            title: `${deck.name} - Quiz`
         }
     } 
     flip = () => {

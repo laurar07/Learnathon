@@ -70,6 +70,5 @@ export function fetchDeck(name) {
 }
 
 export function removeAllDecks () {
-	AsyncStorage.removeItem(DECKS_STORAGE_KEY, (err) => {
-	});
+	AsyncStorage.removeItem(DECKS_STORAGE_KEY, () => {})
 }
