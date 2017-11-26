@@ -105,7 +105,6 @@ const MainNavigator = StackNavigator({
   Quiz: {
     screen: Quiz,
     navigationOptions: {
-      headerLeft: null,
       headerTintColor: white,
       headerStyle: {
         backgroundColor: purple
@@ -115,26 +114,7 @@ const MainNavigator = StackNavigator({
 })
 
 export default class App extends React.Component {
-  state = {
-    input: '@tylermcginnis',
-    showInput: false
-  }
-  componentDidMount() {
-    console.log('Before');
-    console.log('After'); 
-  }
-  handleToggleSwitch = () => {
-    this.setState((state) => ({
-      showInput: !state.showInput
-    }))
-  }
-  handleTextChange = input => {
-    this.setState(() => ({
-      input
-    }))
-  }
   render() {
-    const { input, showInput } = this.state
     return (
       <Provider store={createStore(reducer)}>
         <View style={{flex: 1}}>

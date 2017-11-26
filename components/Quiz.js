@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Animated, PlatformIOS } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, Animated } from 'react-native'
 import { 
-    getDailyReminderValue, 
     clearLocalNotification, 
     setLocalNotification 
 } from '../utils/helpers'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
-import { addCard } from '../actions'
-import { white, purple, gray, blue, red, black } from '../utils/colors'
+import { white, purple, blue, red, black } from '../utils/colors'
 import { NavigationActions } from 'react-navigation'
 import Results from './Results'
 
@@ -103,13 +101,13 @@ class Quiz extends Component {
             score: 0,
             flipped: false
         })
+
+        clearLocalNotification()
+            .then(setLocalNotification())
     }
     navigateToDeck = () => {
-        const { deck } = this.props
-        this.resetNavigation({
-            routeName: 'DeckDetail',
-            params: { deck },
-        })
+        console.log(this.props.navigation.state.key)
+        this.props.navigation.dispatch(NavigationActions.back())
     }
     renderFront = () => {
         return (
@@ -198,27 +196,6 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: white
     },
-    col: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    item: {
-        backgroundColor: white,
-        borderRadius: Platform.OS === 'ios' ? 16 : 2,
-        padding: 20,
-        marginLeft: 10,
-        marginRight: 10,
-        marginTop: 17,
-        justifyContent: 'center',
-        shadowRadius: 3,
-        shadowOpacity: 0.8,
-        shadowColor: 'rgba(0,0,0,0.24)',
-        shadowOffset: {
-            width: 0,
-            height: 3
-        }
-    },
     iosBtn: {
         padding: 10,
         borderRadius: 7,
@@ -249,14 +226,6 @@ const styles = StyleSheet.create({
         marginRight: 30,
         paddingBottom: 30
     },
-    bottom: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'flex-end',
-        marginLeft: 30,
-        marginRight: 30
-    },
     right: {
         justifyContent: 'center',
         alignSelf: 'flex-end'
@@ -278,12 +247,7 @@ const styles = StyleSheet.create({
         color: black,
         fontSize: 22,
         textAlign: 'center'
-    },
-    animatedText: {
-        color: purple,
-        fontSize: 120,
-        textAlign: 'center',
-    },
+    }
 })
 
 function mapStateToProps(state, { navigation }) {

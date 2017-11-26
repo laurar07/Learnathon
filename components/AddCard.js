@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
 import { submitCard } from '../utils/api'
 import { connect } from 'react-redux'
 import { addCard } from '../actions'
 import { white, purple, gray } from '../utils/colors'
-import { NavigationActions } from 'react-navigation'
 
 function SubmitBtn ({ onPress }) {
     return (
@@ -114,11 +112,6 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: white
     },
-    row: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
     space: {
         height: 80
     },
@@ -146,13 +139,6 @@ const styles = StyleSheet.create({
         fontSize: 22,
         textAlign: 'center'
     },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 30,
-        marginRight: 30
-    },
     deckName: {
         textAlign: 'center',
         fontWeight: 'bold',
@@ -167,13 +153,6 @@ function mapStateToProps(state, { navigation }) {
     const currDeck = state['decks'].filter((d) => d.name === deck.name)[0]
     return {
         deck: currDeck
-    }
-}
-
-function mapDispatchToProps(dispatch, { navigation }) {
-    const { deck } = navigation.state.params
-    return {
-        goBack: () => navigation.goBack()
     }
 }
 

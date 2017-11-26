@@ -1,31 +1,22 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
-import { 
-    getDailyReminderValue, 
-    clearLocalNotification, 
-    setLocalNotification 
-} from '../utils/helpers'
-//import DateHeader from './DateHeader'
-//import TextButton from './TextButton'
-import { Ionicons } from '@expo/vector-icons'
 import { submitDeck, fetchDeck } from '../utils/api'
 import { connect } from 'react-redux'
 import { addDeck } from '../actions'
 import { white, purple, gray } from '../utils/colors'
-import { NavigationActions } from 'react-navigation'
 
 function SubmitBtn ({ onPress }) {
-    return (
-        <TouchableOpacity
-            style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn}
-            onPress={onPress}>
-                <Text style={styles.submitBtnText}>Add</Text>
-        </TouchableOpacity>
-    )
+	return (
+		<TouchableOpacity
+			style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn}
+			onPress={onPress}>
+			<Text style={styles.submitBtnText}>Add</Text>
+		</TouchableOpacity>
+	)
 }
 
 class AddDeck extends Component {
-    state = {
+	state = {
         name: '',
     }
     submit = () => {
@@ -62,10 +53,13 @@ class AddDeck extends Component {
                 'Deck added',
                 message,
                 [
-                    {text: 'OK', onPress: () => this.props.navigation.navigate(
-                        'DeckDetail',
-                        { deck }
-                    )},
+                    {
+                        text: 'OK', 
+                        onPress: () => this.props.navigation.navigate(
+                            'DeckDetail',
+                            { deck }
+                        )
+                    },
                 ],
                     { cancelable: false }
             )
@@ -74,92 +68,80 @@ class AddDeck extends Component {
                 'Failed to add deck',
                 message,
                 [
-                    {text: 'OK', onPress: () => {}},
+                    {
+                        text: 'OK', 
+                        onPress: () => {}
+                    },
                 ],
                     { cancelable: false }
             )
         }
     }
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <View>
-                    <Text style={styles.deckName}>
+	render() {
+		return (
+			<View style={styles.container}>
+				<View>
+					<Text style={styles.deckName}>
                         Enter the name of a deck to add
-                    </Text>
-                    <TextInput
-                        style={{ height: 40, borderColor: gray, borderWidth: 1 }}
-                        onChangeText={(text) => this.setState({ name: text })}
-                        value={this.state.name}
-                    />
-                </View>
-                <View style={[{flex: 1}]}>
-                </View>
-                <SubmitBtn onPress={this.submit}/>
-            </View>
-        )
-    }
+					</Text>
+					<TextInput
+						style={{ height: 40, borderColor: gray, borderWidth: 1 }}
+						onChangeText={(text) => this.setState({ name: text })}
+						value={this.state.name}
+					/>
+				</View>
+				<View style={[{flex: 1}]}>
+				</View>
+				<SubmitBtn onPress={this.submit}/>
+			</View>
+		)
+	}
 }
 
 function mapStateToProps ({ decks }) {
-    return {
-        decks
-    }
+	return {
+		decks
+	}
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: white
-    },
-    row: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    space: {
-        height: 80
-    },
-    iosSubmitBtn: {
-        backgroundColor: purple,
-        padding: 10,
-        borderRadius: 7,
-        height: 45,
-        marginLeft: 40,
-        marginRight: 40
-    },
-    androidSubmitBtn: {
-        backgroundColor: purple,
-        padding: 10,
-        paddingLeft: 30,
-        paddingRight: 30,
-        height: 45,
-        borderRadius: 2,
-        alignSelf: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    submitBtnText: {
-        color: white,
-        fontSize: 22,
-        textAlign: 'center'
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 30,
-        marginRight: 30
-    },
-    deckName: {
-        textAlign: 'center',
-        fontWeight: 'bold',
-        fontSize: 20,
-        paddingTop: 20,
-        paddingBottom: 20
-    }
+	container: {
+		flex: 1,
+		padding: 20,
+		backgroundColor: white
+	},
+	iosSubmitBtn: {
+		backgroundColor: purple,
+		padding: 10,
+		borderRadius: 7,
+		height: 45,
+		marginLeft: 40,
+		marginRight: 40
+	},
+	androidSubmitBtn: {
+		backgroundColor: purple,
+		padding: 10,
+		paddingLeft: 30,
+		paddingRight: 30,
+		height: 45,
+		borderRadius: 2,
+		alignSelf: 'center',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	submitBtnText: {
+		color: white,
+		fontSize: 22,
+		textAlign: 'center'
+	},
+	deckName: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 20,
+		paddingTop: 20,
+		paddingBottom: 20
+	}
 })
 
 export default connect(mapStateToProps)(AddDeck)
