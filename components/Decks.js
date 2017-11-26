@@ -90,12 +90,13 @@ const styles = StyleSheet.create({
     deckName: {
         textAlign: 'center',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 25,
         paddingTop: 20,
         paddingBottom: 20
     },
     deckCardCount: {
-        textAlign: 'center'        
+        textAlign: 'center',
+        fontSize: 15        
     },
     noDataText: {
         fontSize: 20,
