@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
 import { 
-    getDailyReminderValue, 
     clearLocalNotification, 
     setLocalNotification 
 } from '../utils/helpers'
-import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
-import { addCard } from '../actions'
-import { white, purple, gray, black } from '../utils/colors'
-import { NavigationActions } from 'react-navigation'
+import { white, purple, black } from '../utils/colors'
 
 function AddCardBtn ({ onPress }) {
     return (
@@ -29,7 +25,6 @@ function StartQuizBtn ({ onPress, deck }) {
             style={Platform.OS === 'ios' ? 
                 [styles.iosBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }] : 
                 [styles.androidBtn, { backgroundColor: purple, borderWidth: 2, borderColor: black }]}
-            disabled={(deck && deck.cards && deck.cards.length > 0) ? false : true}
             onPress={onPress}>
                 <Text style={[styles.submitBtnText, { color: white }]}>Start Quiz</Text>
         </TouchableOpacity>
@@ -44,14 +39,29 @@ class DeckDetail extends Component {
         }
     } 
     startQuiz = () => {
-        const { deck } = this.props        
-        this.props.navigation.navigate(
-            'Quiz',
-            { deck }
-        )
+        const { deck } = this.props   
+        
+        if (deck && deck.cards && deck.cards.length > 0) {
+            this.props.navigation.navigate(
+                'Quiz',
+                { deck }
+            )
 
-        clearLocalNotification()
-            .then(setLocalNotification())
+            clearLocalNotification()
+                .then(setLocalNotification())
+        } else {
+            Alert.alert(
+                'No cards in deck',
+                'Please add cards to start a quiz',
+                [
+                    { 
+                        text: 'OK',
+                        onPress: () => {}
+                    },
+                ],
+                    { cancelable: false }
+            )
+        }
     }
     render() {
         const { deck, dispatch } = this.props
@@ -80,11 +90,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: white
-    },
-    row: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
     },
     item: {
         backgroundColor: white,
@@ -126,13 +131,6 @@ const styles = StyleSheet.create({
         color: black,
         fontSize: 22,
         textAlign: 'center'
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 30,
-        marginRight: 30
     },
     deckName: {
         textAlign: 'center',

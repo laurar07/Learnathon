@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native'
-import { purple } from '../utils/colors'
 import { connect } from 'react-redux'
 import { receiveDecks } from '../actions'
 import { fetchListOfDecks, removeAllDecks } from '../utils/api'
@@ -43,7 +42,7 @@ class Decks extends Component {
             return <AppLoading />
         }
         return (
-            <View>
+            <View style={styles.container}>
                 {decks && Array.isArray(decks) && decks.length > 0 && (
                     <FlatList
                         data={decks}
@@ -69,6 +68,9 @@ function mapStateToProps ({ decks }) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     item: {
         backgroundColor: white,
         borderRadius: Platform.OS === 'ios' ? 16 : 2,
