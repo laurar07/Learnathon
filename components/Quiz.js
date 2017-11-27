@@ -57,7 +57,8 @@ class Quiz extends Component {
     state = {
         index: 0,
         score: 0,
-        flipped: false
+        flipped: false,
+        animatedValue: new Animated.Value(1)
     }
     static navigationOptions = ({ navigation }) => {
         const { deck } = navigation.state.params      
@@ -66,9 +67,20 @@ class Quiz extends Component {
         }
     } 
     flip = () => {
-        this.setState({
+        const { animatedValue } = this.state
+        Animated.spring(animatedValue, {
+            toValue: 0.25,
+            velocity: 20,
+            speed: 50
+        }).start(() => this.setState({
             flipped: !this.state.flipped
-        });
+        }, () => {
+            Animated.spring(animatedValue, {
+                toValue: 1,
+                velocity: 20,
+                speed: 50
+            }).start()
+        }));
     }
     correct = () => {
         // Add a point
@@ -84,6 +96,10 @@ class Quiz extends Component {
                 index: state.index + 1,
                 flipped: false
             }));
+        } else {
+            // Quiz is complete, clear and reset the notification
+            clearLocalNotification()
+                .then(setLocalNotification())
         }
     }
     resetNavigation = (navAction) => {
@@ -101,9 +117,6 @@ class Quiz extends Component {
             score: 0,
             flipped: false
         })
-
-        clearLocalNotification()
-            .then(setLocalNotification())
     }
     navigateToDeck = () => {
         console.log(this.props.navigation.state.key)
@@ -144,7 +157,16 @@ class Quiz extends Component {
     }
     render() {
         const { deck } = this.props
-        const { index, score, flipped } = this.state
+        const { 
+            index, 
+            score, 
+            flipped,
+            animatedValue
+        } = this.state
+        const rotateY = animatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg']
+        });
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={styles.right} onPress={this.toHome}>
@@ -161,7 +183,7 @@ class Quiz extends Component {
                             {deck.cards[index].question}
                         </Text>
                         <TouchableOpacity onPress={this.flip}>
-                            <Animated.View style={{transform: [{rotateX: '360deg'}]}}>
+                            <Animated.View style={{transform: [{rotateY}]}}>
                                 {flipped && this.renderBack()}
                                 {!flipped && this.renderFront()}
                             </Animated.View>

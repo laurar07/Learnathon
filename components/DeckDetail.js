@@ -1,9 +1,5 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, Text, Platform, StyleSheet, TextInput, Alert } from 'react-native'
-import { 
-    clearLocalNotification, 
-    setLocalNotification 
-} from '../utils/helpers'
 import { connect } from 'react-redux'
 import { white, purple, black } from '../utils/colors'
 
@@ -46,9 +42,6 @@ class DeckDetail extends Component {
                 'Quiz',
                 { deck }
             )
-
-            clearLocalNotification()
-                .then(setLocalNotification())
         } else {
             Alert.alert(
                 'No cards in deck',
