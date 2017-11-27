@@ -119,7 +119,6 @@ class Quiz extends Component {
         })
     }
     navigateToDeck = () => {
-        console.log(this.props.navigation.state.key)
         this.props.navigation.dispatch(NavigationActions.back())
     }
     renderFront = () => {

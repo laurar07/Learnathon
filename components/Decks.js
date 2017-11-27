@@ -13,9 +13,9 @@ class Decks extends Component {
     componentDidMount() {
         const { dispatch } = this.props
 
-        // removeAllDecks()
+        //removeAllDecks()
         fetchListOfDecks()
-            .then((decks) => dispatch(receiveDecks(decks)))
+            .then(({ decks }) => dispatch(receiveDecks(decks)))
             .then(({ decks }) => {})
             .then(() => this.setState(() => ({
                 ready: true

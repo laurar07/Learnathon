@@ -1,13 +1,9 @@
 // utils/_decks.js
+import { AsyncStorage } from 'react-native'
 
 export const DECKS_STORAGE_KEY = 'Learnathon:decks'
 
-function getDecks(data) {
-	const decks = data['decks']
-	return decks
-}
-
-function setDummyData () {
+function setStarterData () {
 	let dummyData = {}
 	dummyData['decks'] = [
 		{
@@ -245,12 +241,14 @@ function setDummyData () {
 			]
 		},
 	]
+
+	AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(dummyData))	
   
-	return dummyData['decks']
+	return dummyData
 }
 
 export function formatListOfDecks (data) {
 	return data === null 
-		? setDummyData() 
-		: getDecks(JSON.parse(data))
+		? setStarterData()
+		: JSON.parse(data)
 }
