@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList, Animated } from 'react-native'
 import { connect } from 'react-redux'
 import { receiveDecks } from '../actions'
 import { fetchListOfDecks, removeAllDecks } from '../utils/api'
@@ -21,18 +21,24 @@ class Decks extends Component {
                 ready: true
             })))
     }
-
     renderItem = ({ item }) => {
+        const bounceValue = new Animated.Value(1)
         return (
-            <View style={styles.item} key={item.name}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate(
-                    'DeckDetail',
-                    { deck: item }
-                )}>
+            <Animated.View style={[styles.item, {transform: [{scale: bounceValue}]}]} key={item.name}>
+                <TouchableOpacity onPress={() => {
+                    Animated.sequence([
+                        Animated.timing(bounceValue, { duration: 100, toValue: 1.04 }),
+                        Animated.spring(bounceValue, { toValue: 1, speed: 100 })
+                    ]).start(() => (
+                        this.props.navigation.navigate(
+                            'DeckDetail',
+                            { deck: item }
+                    )))
+                }}>
                     <Text style={styles.deckName}>{item.name}</Text>
                     <Text style={styles.deckCardCount}>{item.cards ? item.cards.length : 0} cards</Text>
                 </TouchableOpacity>
-            </View>
+            </Animated.View>
         )
     }
     render() {
