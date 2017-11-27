@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Platform, StyleSheet } from 'react-native'
 import { white, purple, black } from '../utils/colors'
+import { FontAwesome, Ionicons } from '@expo/vector-icons'
 
 function getGrade(deck, score) {
 	const scorePercent = (score / deck.cards.length) * 100
@@ -25,6 +26,11 @@ export default function Results ({ deck, score }) {
 			<Text style={[styles.deckName, {fontSize: 40, color: purple}]}>
 				{getGrade(deck, score)}
 			</Text>
+			<View>
+				{Platform.OS === 'ios' 
+					?   <Ionicons name='ios-thumbs-up' size={50} color={black}/>
+					:   <FontAwesome name='thumbs-up' size={50} color={black}/>}
+			</View>
 			<Text style={[styles.deckName, {fontSize: 30}]}>
                 You scored {score} out of {deck.cards.length}
 			</Text>
