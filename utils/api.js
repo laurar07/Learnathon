@@ -65,8 +65,7 @@ export function fetchDeck(name) {
 				}
 			}
 			return {}
-		}
-		)
+		})
 }
 
 export function removeAllDecks () {

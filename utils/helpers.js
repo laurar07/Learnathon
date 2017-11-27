@@ -6,12 +6,6 @@ import { Notifications, Permissions } from 'expo'
 
 const NOTIFICATION_KEY = 'Learnathon:notifications'
 
-export function getDailyReminderValue () {
-	return {
-		today: 'Don\'t forget to test your knowledge today!'
-	}
-}
-
 export function clearLocalNotification () {
 	return AsyncStorage.removeItem(NOTIFICATION_KEY)
 		.then(Notifications.cancelAllScheduledNotificationsAsync)
@@ -20,7 +14,7 @@ export function clearLocalNotification () {
 export function createNotification () {
 	return {
 		title: 'Learnathon',
-		body: 'Don\'t forget to take your quiz today!',
+		body: 'Don\'t forget to test your knowledge today!',
 		ios: {
 			sound: true,
 		},
