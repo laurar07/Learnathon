@@ -125,7 +125,7 @@ class Quiz extends Component {
     renderFront = () => {
         return (
             <View>
-                <Text style={[styles.questionAnswerText, {fontSize: 40, color: red}]}>
+                <Text style={[styles.questionAnswerText, {fontSize: 30, color: red}]}>
                     Show Answer
                 </Text>
             </View>
@@ -137,7 +137,7 @@ class Quiz extends Component {
         
         return (
             <View>
-                <Text style={[styles.questionAnswerText, {fontSize: 40, color: blue}]}>
+                <Text style={[styles.questionAnswerText, {fontSize: 30, color: blue}]}>
                     {deck.cards[index].answer}
                 </Text>
             </View>
