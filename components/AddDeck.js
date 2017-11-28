@@ -76,8 +76,7 @@ class AddDeck extends Component {
                     { cancelable: false }
             )
         }
-    }
-
+	}
 	render() {
 		return (
 			<View style={styles.container}>
