@@ -2,6 +2,8 @@
 
 This mobile app created with React Native is your perfect mobile companion for learning on the go. Learning a new language? Have a test tomorrow? Need a quick reference guide for your topic? With Learnathon, you can create flashcards that you can use to test your knowledge whenever, wherever. Start by entering your topic, and any number of questions/answers, and you will be able to start a quiz right away. To keep your knowledge fresh, the app will remind you to take at least one quiz every day. Keep on learning!
 
+To get you started, we have included a few decks on React, React Native, Redux, as well as some languages.
+
 ## How to run
 
 This app works on both Android and iOS devices and simulators.
