@@ -25,29 +25,35 @@ For more information on Expo and loading this app in a device or simulator, clic
 ## List of Decks
 
 The landing page contains a list of your decks with the card count of each:
+
 <img width="379" alt="decks" src="https://user-images.githubusercontent.com/1109471/33359467-bc1cde02-d483-11e7-9006-8e92c51451ca.png">
 
 ## Deck Details
 
 You can get more details on a specific deck by tapping on it from the list of decks:
+
 <img width="376" alt="deckview" src="https://user-images.githubusercontent.com/1109471/33359479-cf8e5fba-d483-11e7-85dc-a2f0e0033b3b.png">
 
 ## Add Deck
 
 You can add a new deck by clicking on the 'Add Deck' tab:
+
 <img width="375" alt="adddeck" src="https://user-images.githubusercontent.com/1109471/33359436-9e5437bc-d483-11e7-85ac-602d8c57cb84.png">
 
 ## Add Card
 
 You can also add a card to an existing deck from the Deck Details view:
+
 <img width="376" alt="addcard" src="https://user-images.githubusercontent.com/1109471/33359400-7269b136-d483-11e7-9657-0bdbd99d6363.png">
 
 ## Quiz
 
 You can start a quiz on an existing deck from the Deck Details view. You will be presented with the flashcards for that topic, and initially the answer will be hidden behind 'Show Answer':
+
 <img width="374" alt="quizfront" src="https://user-images.githubusercontent.com/1109471/33359512-f888eaac-d483-11e7-8d4e-7ac76978b10f.png"> 
 
 Once you are ready to see the answer, you can tap on 'Show Answer', which will reveal the correct answer to the question. You can then mark yourself as 'Correct' or 'Incorrect' to move on to the next question:
+
 <img width="376" alt="quizback" src="https://user-images.githubusercontent.com/1109471/33359494-e4e62244-d483-11e7-909f-5077efaa4d87.png">
 
 ## Results
