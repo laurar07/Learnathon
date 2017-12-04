@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList, Animated } from 'react-native'
+import { View, Text, StyleSheet, Platform, TouchableOpacity, FlatList, Animated, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { receiveDecks } from '../actions'
-import { fetchListOfDecks, removeAllDecks } from '../utils/api'
-import { white } from '../utils/colors'
+import { receiveDecks, deleteDeck } from '../actions'
+import { fetchListOfDecks, removeAllDecks, removeDeck } from '../utils/api'
+import { white, red } from '../utils/colors'
 import { AppLoading } from 'expo'
+import Swipeout from 'react-native-swipeout';
 
 class Decks extends Component {
 	state = {
@@ -21,10 +22,42 @@ class Decks extends Component {
                 ready: true
             })))
     }
+    deleteDeck = (deck) => {
+        const { dispatch } = this.props        
+
+        Alert.alert(
+            'Delete deck',
+            'Are you sure you want to delete this deck?',
+            [
+                {
+                    text: 'Cancel', 
+                    onPress: () => {}, 
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK', 
+                    onPress: () => {
+                        removeDeck(deck)
+                            .then(() => dispatch(deleteDeck(deck.name)))
+                    }
+                },
+            ],
+                { cancelable: false }
+        )
+    }
     renderItem = ({ item }) => {
         const bounceValue = new Animated.Value(1)
+        const swipeoutBtns = [
+            {
+              text: 'Delete',
+              backgroundColor: red,
+              color: white,
+              onPress: () => this.deleteDeck(item)
+            }
+        ]
         return (
-            <Animated.View style={[styles.item, {transform: [{scale: bounceValue}]}]} key={item.name}>
+            <Swipeout style={styles.item} right={swipeoutBtns} autoClose={true}>            
+            <Animated.View style={{padding: 20, transform: [{scale: bounceValue}]}} key={item.name}>
                 <TouchableOpacity onPress={() => {
                     Animated.sequence([
                         Animated.timing(bounceValue, { duration: 100, toValue: 1.04 }),
@@ -39,6 +72,7 @@ class Decks extends Component {
                     <Text style={styles.deckCardCount}>{item.cards ? item.cards.length : 0} cards</Text>
                 </TouchableOpacity>
             </Animated.View>
+            </Swipeout>
         )
     }
 	render() {
@@ -80,7 +114,7 @@ const styles = StyleSheet.create({
 	item: {
 		backgroundColor: white,
 		borderRadius: Platform.OS === 'ios' ? 16 : 2,
-		padding: 20,
+		//padding: 20,
 		marginLeft: 10,
 		marginRight: 10,
 		marginTop: 17,

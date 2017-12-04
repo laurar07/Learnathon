@@ -1,4 +1,4 @@
-import { ADD_CARD, ADD_DECK, RECEIVE_DECKS } from '../actions'
+import { ADD_CARD, ADD_DECK, RECEIVE_DECKS, DELETE_DECK } from '../actions'
 
 function entries (state = {}, action) {
 	switch(action.type) {
@@ -28,7 +28,18 @@ function entries (state = {}, action) {
 			}
 			return {
 				...state,
-				['decks'] : (!deckList || !Array.isArray(deckList) || deckList.length === 0) ? [newDeck] : deckList.concat(newDeck)
+				['decks'] : (!deckList || !Array.isArray(deckList) || deckList.length === 0) 
+					? [newDeck] 
+					: deckList.concat(newDeck)
+			}
+		}
+		case DELETE_DECK: {
+			let deckList = state['decks']
+			return {
+				...state,
+				['decks'] : (!deckList || !Array.isArray(deckList) || deckList.length === 0) 
+					? []
+					: deckList.filter((deck) => deck.name !== action.name)
 			}
 		}
 		default: {
