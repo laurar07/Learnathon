@@ -68,6 +68,22 @@ export function fetchDeck(name) {
 		})
 }
 
+export function removeDeck({ name, cards }) {
+	return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+		.then((results) => {
+			const data = JSON.parse(results)
+			if (data) {
+				const decks = JSON.parse(results)['decks']
+				if (decks) {
+					const updatedDecks = decks.filter((deck) => deck.name !== name)
+					AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify({
+						['decks'] : updatedDecks
+					}))
+				}
+			}
+		})
+}
+
 export function removeAllDecks () {
 	AsyncStorage.removeItem(DECKS_STORAGE_KEY, () => {})
 }
